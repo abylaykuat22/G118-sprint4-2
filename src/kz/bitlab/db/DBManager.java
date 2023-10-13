@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import kz.bitlab.model.City;
 import kz.bitlab.model.Item;
+import kz.bitlab.model.User;
 
 public class DBManager {
 
@@ -126,6 +127,45 @@ public class DBManager {
       statement.executeUpdate();
       statement.close();
     } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  public static User getUserByEmail(String email) {
+    User user = null;
+    try {
+      PreparedStatement statement = connection.prepareStatement(
+          "SELECT * FROM sprintfortwo.users "
+              + "WHERE email = ?"
+      );
+      statement.setString(1, email);
+      ResultSet resultSet = statement.executeQuery();
+      if (resultSet.next()) {
+        user = new User();
+        user.setId(resultSet.getLong("id"));
+        user.setEmail(email);
+        user.setPassword(resultSet.getString("password"));
+        user.setFullName(resultSet.getString("full_name"));
+      }
+      statement.close();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return user;
+  }
+
+  public static void addUser(User user) {
+    try {
+      PreparedStatement statement = connection.prepareStatement(
+          "INSERT INTO sprintfortwo.users(email, password, full_name) "
+              + "VALUES (?, ?, ?)"
+      );
+      statement.setString(1, user.getEmail());
+      statement.setString(2, user.getPassword());
+      statement.setString(3, user.getFullName());
+      statement.executeUpdate();
+      statement.close();
+    }catch (Exception e) {
       e.printStackTrace();
     }
   }
