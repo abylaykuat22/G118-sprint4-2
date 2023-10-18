@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import kz.bitlab.db.DBManager;
 import kz.bitlab.model.User;
 
@@ -19,6 +20,7 @@ public class SignUpServlet extends HttpServlet {
     String password = req.getParameter("user_password");
     String rePassword = req.getParameter("user_re_password");
     String fullName = req.getParameter("user_full_name");
+    LocalDate birthDate = LocalDate.parse(req.getParameter("user_birth_date"));
     User user = DBManager.getUserByEmail(email);
     String redirect = "/?regErrorEmail";
     if (user == null) {
@@ -29,6 +31,7 @@ public class SignUpServlet extends HttpServlet {
         user.setEmail(email);
         user.setPassword(password);
         user.setFullName(fullName);
+        user.setBirthDate(birthDate);
         DBManager.addUser(user);
       }
     }

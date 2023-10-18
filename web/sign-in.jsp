@@ -105,6 +105,10 @@
                         <label for="exampleInputFullName" class="form-label">Full name</label>
                         <input name="user_full_name" type="text" class="form-control" id="exampleInputFullName">
                     </div>
+                    <div class="mb-3">
+                        <label for="exampleInputBirthDate" class="form-label">Birth date</label>
+                        <input name="user_birth_date" type="date" class="form-control" id="exampleInputBirthDate">
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
