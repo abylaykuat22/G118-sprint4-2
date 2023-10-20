@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.List;
 import kz.bitlab.db.DBManager;
 import kz.bitlab.model.Blog;
+import kz.bitlab.model.Comment;
 import kz.bitlab.model.User;
 
 @WebServlet("/blogs")

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import kz.bitlab.model.Blog;
 import kz.bitlab.model.City;
+import kz.bitlab.model.Comment;
 import kz.bitlab.model.Item;
 import kz.bitlab.model.User;
 
@@ -281,6 +282,59 @@ public class DBManager {
       statement.setString(2, blog.getContent());
       statement.setLong(3, blog.getUser().getId());
       statement.setLong(4, blog.getId());
+      statement.executeUpdate();
+      statement.close();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  public static List<Comment> getCommentsByBlogId(Long blogId) {
+    List<Comment> comments = new ArrayList<>();
+    try {
+      PreparedStatement statement = connection.prepareStatement(
+          "SELECT c.*, b.title, u.full_name FROM sprintfortwo.comments c "
+              + "INNER JOIN sprintfortwo.blogs b on c.blog_id = b.id "
+              + "INNER JOIN sprintfortwo.users u on c.user_id = u.id "
+              + "WHERE c.blog_id = ? "
+              + "ORDER BY c.post_date DESC "
+      );
+      statement.setLong(1, blogId);
+      ResultSet resultSet = statement.executeQuery();
+      while (resultSet.next()) {
+        Comment comment = new Comment();
+        comment.setId(resultSet.getLong("id"));
+        comment.setDescription(resultSet.getString("description"));
+        comment.setPostDate(resultSet.getObject("post_date", LocalDateTime.class));
+
+        User user = new User();
+        user.setId(resultSet.getLong("user_id"));
+        user.setFullName(resultSet.getString("full_name"));
+        comment.setUser(user);
+
+        Blog blog = new Blog();
+        blog.setId(resultSet.getLong("blog_id"));
+        blog.setTitle(resultSet.getString("title"));
+        comment.setBlog(blog);
+
+        comments.add(comment);
+      }
+      statement.close();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return comments;
+  }
+
+  public static void addComment(String commentDescription, Long blogId, Long userId) {
+    try {
+      PreparedStatement statement = connection.prepareStatement(
+          "INSERT INTO sprintfortwo.comments(description, user_id, blog_id) "
+              + "VALUES (?, ?, ?)"
+      );
+      statement.setString(1, commentDescription);
+      statement.setLong(2, userId);
+      statement.setLong(3, blogId);
       statement.executeUpdate();
       statement.close();
     } catch (Exception e) {
